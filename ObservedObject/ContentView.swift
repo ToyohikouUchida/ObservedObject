@@ -7,36 +7,42 @@
 
 import SwiftUI
 
+class Pet: ObservableObject {
+    @Published var name = ""
+    @Published var weight = ""
+    @Published var height = ""
+    @Published var age = ""
+}
+
 struct ContentView: View {
-    @State var name = ""
-    @State var weight = ""
-    @State var height = ""
-    @State var age = ""
+    @ObservedObject var pet = Pet()
+    @State var isShowInfoView = false
     var body: some View {
         VStack {
             Text("あなたのペット情報を入力してください。")
-            TextField("名前", text: $name)
-            TextField("体重", text: $weight)
-            TextField("身長", text: $height)
-            TextField("年齢", text: $age)
+            TextField("名前", text: $pet.name)
+            TextField("体重", text: $pet.weight)
+            TextField("身長", text: $pet.height)
+            TextField("年齢", text: $pet.age)
             Button("決定"){
+                isShowInfoView = true
             }
-            .textFieldStyle(.roundedBorder)
-            .padding()
+            .sheet(isPresented: $isShowInfoView) {
+                InfoView(pet: pet)            
+            }
         }
+        .textFieldStyle(.roundedBorder)
+        .padding()
     }
 }
 struct InfoView: View{
-    @Binding var name: String
-    @Binding var weight: String
-    @Binding var height: String
-    @Binding var age: String
+    @ObservedObject var pet : Pet
     var body: some  View {
         Text("あなたのペット情報")
-        Text("名前 : \(name)")
-        Text("体重 : \(name)")
-        Text("身長 : \(height)")
-        Text("年齢 : \(age)")
+        Text("名前 : \(pet.name)")
+        Text("体重 : \(pet.weight)")
+        Text("身長 : \(pet.height)")
+        Text("年齢 : \(pet.age)")
 
         
     }
